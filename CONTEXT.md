@@ -121,13 +121,20 @@ l'appareil. La séance du jour = la suivante de la dernière faite dans `ROT`.
 
 ## Statut
 
-- **v1 (2026-11-03)** : livrée en local, **pas encore en ligne ni sous git**. Testée dans le
-  navigateur intégré au format téléphone : accueil, programme, exercices, fiche + charge,
-  progrès, thème sombre, et une séance complète d'un bout à l'autre (16 étapes, fin, note,
-  historique, état « C'est fait »), miroir du côté gauche, récup. Pas encore testé sur un vrai
-  téléphone : voix, vibreur et Wake Lock dépendent du navigateur.
-- Pour la mettre en ligne : dépôt public `kkjsf/tonus` + GitHub Pages (comme `ciel/`, par
-  l'interface web, push SSH). Rien de personnel dans le code.
+- **v1 en ligne (2026-11-03, `6415afb`)** sur **https://kkjsf.github.io/tonus/**, dépôt public
+  `git@github.com:kkjsf/tonus.git` (branche `main`, Pages « Deploy from a branch », `main` /
+  racine). Vérifiée en ligne : bonne version servie, service worker actif, 7 fichiers en cache
+  `tonus-v1`, aucune erreur. Testée avant dans le navigateur intégré au format téléphone :
+  accueil, programme, exercices, fiche + charge, progrès, thème sombre, une séance complète d'un
+  bout à l'autre (16 étapes, fin, note, historique, état « C'est fait »), miroir du côté gauche,
+  récup. **Pas encore testée sur un vrai téléphone** : voix, vibreur et Wake Lock dépendent du
+  navigateur.
+- Mise en ligne faite comme pour `ciel/` : dépôt créé et Pages activé par l'interface web (Chrome
+  connecté au compte kkjsf), push par SSH. Le dépôt est public : rien de personnel dans le code ni
+  dans ce fichier. Livrer une version : bumper `APP_VERSION` + `APP_BUILT`, commit, `git push`.
+- Installation Android : `kkjsf.github.io` porte déjà Harmonic Atlas, Chess Analyst et Ciel ; si
+  Chrome refuse d'installer (« Déjà installé »), c'est le bug de Chrome 154 à 156 décrit dans
+  `../ciel/CONTEXT.md`, corrigé en Chrome 157.
 
 ## Pièges
 
