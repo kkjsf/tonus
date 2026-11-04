@@ -279,13 +279,18 @@ h3 { font-size: 15px; font-weight: 750; margin: 18px 0 8px; }
 .pl-ring circle { fill: none; stroke-width: 9; }
 .pl-ring .rt { stroke: color-mix(in srgb, var(--ink) 10%, transparent); }
 .pl-ring .rp { stroke: var(--ph, var(--acc)); stroke-linecap: round; stroke-dasharray: 326.73; }
-.pl-sec { position: absolute; inset: 0; display: grid; place-items: center; font-size: clamp(40px, 7dvh, 58px); font-weight: 850; font-variant-numeric: tabular-nums; letter-spacing: -.03em; }
+.pl-sec { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.pl-sec b { font-size: clamp(40px, 7dvh, 58px); font-weight: 850; font-variant-numeric: tabular-nums; letter-spacing: -.03em; line-height: 1; }
+.pl-sec small { font-size: 12px; font-weight: 750; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-top: 4px; }
+.pl-sec small:empty { display: none; }
 .pl-cue { font-size: 15px; color: var(--muted); max-width: 360px; min-height: 44px; text-wrap: balance; transition: opacity .3s; }
 .pl-ctrl { display: flex; align-items: center; justify-content: center; gap: 26px; padding: 6px 0; }
 .pl-ctrl button { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; background: var(--card); box-shadow: var(--shadow); }
 .pl-ctrl .pl-play { width: 76px; height: 76px; background: var(--acc); color: #fff; box-shadow: 0 10px 26px color-mix(in srgb, var(--acc) 40%, transparent); }
 .pl-ctrl svg.i { width: 24px; height: 24px; }
 .pl-ctrl .pl-play svg.i { width: 30px; height: 30px; fill: currentColor; stroke: none; }
+.pl-ctrl .pl-play.done { width: 160px; border-radius: 38px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 21px; font-weight: 850; }
+.pl-ctrl .pl-play.done svg.i { fill: none; stroke: currentColor; stroke-width: 3; width: 26px; height: 26px; }
 .pl-clock { text-align: center; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
 .pl-modal { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; background: rgba(8, 8, 14, .55); padding: 20px; animation: bgin .2s; }
 .pl-mcard { background: var(--card); border-radius: 24px; padding: 22px; max-width: 340px; width: 100%; text-align: center; }
@@ -337,8 +342,8 @@ h3 { font-size: 15px; font-weight: 750; margin: 18px 0 8px; }
 
 <script>
 'use strict';
-const APP_VERSION = '1';
-const APP_BUILT = '03/11/2026 16h59';
+const APP_VERSION = '2';
+const APP_BUILT = '04/11/2026 10h33';
 const $ = id => document.getElementById(id);
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -626,7 +631,7 @@ const EX = {
   pushup_close: { name: 'Pompes serrées', cat: 'push', mus: 'Triceps, pectoraux', eq: 'handles', handles: true, mat: true,
     cues: ['Poignées rapprochées, sous la poitrine', 'Coudes qui frôlent le buste en descendant', 'Gainé, regard vers le sol'],
     err: 'Coudes qui s\'écartent.', easy: 'Sur les genoux.', hard: 'Pause 1 s en bas.',
-    frames: [PUSH_TOP, PUSH_BOT], tempo: [1.1, .8] },
+    frames: [PUSH_TOP, PUSH_BOT], tempo: [1.1, .8], reps: [6, 8, 10, 12] },
   shoulder_press: { name: 'Développé épaules', cat: 'push', mus: 'Épaules, triceps', eq: 'db', db: 'both',
     cues: ['Debout, haltères à hauteur d\'épaules, paumes vers l\'avant', 'Pousse au-dessus de la tête sans cambrer', 'Redescends en contrôle jusqu\'aux oreilles'],
     err: 'Creuser le bas du dos : serre les fessiers et le ventre.', easy: 'Assis, ou plus léger.', hard: 'Plus lourd, ou descente en 3 s.',
@@ -665,9 +670,9 @@ const EX = {
     err: 'Dos qui se cambre en bout de course.', easy: 'Amplitude réduite.', hard: 'Plus lourd, plus lent.',
     frames: [o(PRESS_LIE, { hn: [-20, 24] }), o(PRESS_LIE, { hn: at(S_LIE, 168, 22) })], tempo: [1.4, 1.2] },
   renegade_row: { name: 'Rowing en planche', cat: 'pull', mus: 'Dos, abdos, épaules', eq: 'db', db: 'both', mat: true,
-    cues: ['Planche bras tendus, mains sur les haltères, pieds écartés', 'Tire un haltère vers la hanche, puis l\'autre', 'Bassin immobile, pas de rotation'],
+    cues: ['Planche bras tendus, mains sur les haltères, pieds écartés', 'Tire un haltère vers la hanche, puis l\'autre : chaque bras compte pour un', 'Bassin immobile, pas de rotation'],
     err: 'Bassin qui tourne à chaque tirage.', easy: 'Sur les genoux.', hard: 'Une pompe entre deux tirages.',
-    frames: [o(RENEG, { hn: R_HAND }), o(RENEG, { hn: R_ROW, hf: R_HAND }), o(RENEG, { hn: R_HAND }), o(RENEG, { hn: R_HAND, hf: R_ROW })], tempo: .6 },
+    frames: [o(RENEG, { hn: R_HAND }), o(RENEG, { hn: R_ROW, hf: R_HAND }), o(RENEG, { hn: R_HAND }), o(RENEG, { hn: R_HAND, hf: R_ROW })], tempo: .6, reps: [6, 8, 10, 12] },
 };
 const CATS = { core: ['Abdos et gainage', 'var(--core)'], push: ['Poussée', 'var(--push)'], pull: ['Tirage', 'var(--pull)'], mob: ['Échauffement et étirements', 'var(--mob)'] };
 const EQ = { handles: 'Poignées de pompes', db: '2 haltères', db1: '1 haltère', none: 'Poids du corps' };
@@ -689,11 +694,16 @@ const SESS = {
 // Ordre pense pour ne jamais enchainer deux jours les memes muscles (poussee et tirage se suivent, c'est voulu).
 const ROT = ['push', 'pull', 'core', 'upper', 'abs'];
 const LEVELS = [
-  { n: 1, name: 'Découverte', work: 30, rest: 30 },
-  { n: 2, name: 'Régulier', work: 40, rest: 20 },
-  { n: 3, name: 'Solide', work: 45, rest: 15 },
-  { n: 4, name: 'Costaud', work: 50, rest: 10 },
+  { n: 1, name: 'Découverte', work: 30, rest: 30, reps: 8 },
+  { n: 2, name: 'Régulier', work: 40, rest: 20, reps: 10 },
+  { n: 3, name: 'Solide', work: 45, rest: 15, reps: 12 },
+  { n: 4, name: 'Costaud', work: 50, rest: 10, reps: 15 },
 ];
+// La muscu se compte en répétitions (on appuie sur « Fait »), les abdos et le gainage au chrono.
+const isReps = id => EX[id].cat === 'push' || EX[id].cat === 'pull';
+const repsFor = (id, lvN) => EX[id].reps ? EX[id].reps[lvN - 1] : LEVELS[lvN - 1].reps;
+const SEC_PER_REP = 2.7;
+const counted = s => s.k === 'work' && s.reps > 0;
 const WARM = { full: [['jumping_jacks', 30], ['arm_circles', 30]], express: [['jumping_jacks', 30]] };
 const COOL = { full: [['cobra', 25], ['child_pose', 25]], express: [['child_pose', 30]] };
 const SETUP = 10;
@@ -708,11 +718,16 @@ function buildPlan(sid, lvN, express) {
   const st = [{ k: 'ready', ex: WARM[key][0][0], dur: 5 }];
   WARM[key].forEach(([ex, dur]) => st.push({ k: 'warm', ex, dur }));
   blocks.forEach((b, i) => {
-    st.push({ k: 'rest', ...b, dur: i ? lv.rest : SETUP, setup: !i });
-    st.push({ k: 'work', ...b, dur: lv.work, n: i + 1, of: blocks.length });
+    const reps = isReps(b.ex) ? repsFor(b.ex, lvN) : 0;
+    st.push({ k: 'rest', ...b, reps, dur: i ? lv.rest : SETUP, setup: !i });
+    st.push({ k: 'work', ...b, reps, dur: reps ? Math.round(reps * SEC_PER_REP) + 3 : lv.work, n: i + 1, of: blocks.length });
   });
   COOL[key].forEach(([ex, dur]) => st.push({ k: 'cool', ex, dur }));
-  return { sid, lv: lvN, express, steps: st, total: st.reduce((a, s) => a + (s.k === 'ready' ? 0 : s.dur), 0) };
+  return { sid, lv: lvN, express, steps: st, approx: st.some(counted), total: st.reduce((a, s) => a + (s.k === 'ready' ? 0 : s.dur), 0) };
+}
+// Avec des séries comptées, la durée n'est qu'une estimation : arrondie à 10 s.
+function planLen(plan) {
+  return plan.approx ? `≈ ${fmtDur(Math.round(plan.total / 10) * 10)}` : fmtDur(plan.total);
 }
 
 /* ---------- donnees ---------- */
@@ -758,6 +773,7 @@ const ICON = {
   sound: '<svg class="i" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg>',
   mute: '<svg class="i" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></svg>',
   clock: '<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 2.8h5"/></svg>',
+  check: '<svg class="i" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
   bolt: '<svg class="i" viewBox="0 0 24 24"><path d="M13 3L5 13.5h6L10 21l8-10.5h-6z"/></svg>',
   list: '<svg class="i" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></svg>',
 };
@@ -794,7 +810,7 @@ function renderToday() {
       <div class="hero-txt"><span class="pill">${ui.pick ? 'Séance choisie' : 'Séance du jour'}</span><h1>${se.name}</h1><p class="hero-desc">${se.desc}</p></div>
       <div class="fig" data-ex="${blocks[0].ex}"${blocks[0].side === 'G' ? ' data-m="1"' : ''}></div>
       <div class="hero-full">
-        <div class="hero-meta"><span>${ICON.clock}${fmtDur(plan.total)}</span><span>${ICON.bolt}Niveau ${S.level}</span><span>${ICON.list}${blocks.length} exercices</span></div>
+        <div class="hero-meta"><span>${ICON.clock}${planLen(plan)}</span><span>${ICON.bolt}Niveau ${S.level}</span><span>${ICON.list}${blocks.length} exercices</span></div>
         <div class="eq">${sessionEquip(sid).map(e => `<span>${e}</span>`).join('')}</div>
         <div class="hero-row"><div class="seg" role="group" aria-label="Durée"><button data-act="fmt" data-v="0" aria-pressed="${!S.express}">10 min</button><button data-act="fmt" data-v="1" aria-pressed="${S.express}">5 min</button></div>
         <button class="hero-link" data-act="pick">Changer de séance</button></div>
@@ -812,7 +828,7 @@ function renderToday() {
   let extra = '';
   if (!S.history.length) extra = `<div class="card"><h2>Bienvenue 👋</h2><p class="lead">Chaque jour, une séance de 10 minutes chrono. Cinq séances tournent : poussée, tirage, gainage, haut du corps, abdos. Un jour raté ? On reprend où on en était.</p>
     <h3>Ton niveau pour commencer</h3>${levelPicker()}</div>`;
-  else if (levelHint()) extra = `<div class="banner"><p><b>Ça devient facile 😎</b><br>Trois séances de suite notées « facile ». On passe au niveau ${S.level + 1} (${LEVELS[S.level].work} s / ${LEVELS[S.level].rest} s) ?</p>
+  else if (levelHint()) extra = `<div class="banner"><p><b>Ça devient facile 😎</b><br>Trois séances de suite notées « facile ». On passe au niveau ${S.level + 1} (${LEVELS[S.level].reps} répétitions en muscu, ${LEVELS[S.level].work} s d'effort en abdos) ?</p>
     <div style="display:grid;gap:6px"><button class="btn sm pri" data-act="lvlup">Oui</button><button class="btn sm" data-act="lvlno">Plus tard</button></div></div>`;
   $('v-today').innerHTML = hero + extra
     + `<div class="card week"><div class="card-head"><h2>Cette semaine</h2><span class="muted">${weekCount} / 7</span></div><div class="days">${week}</div></div>
@@ -821,29 +837,29 @@ function renderToday() {
       <div class="phase-line"><i class="dot"></i><span><b>Échauffement</b> · ${WARM[key].map(w => EX[w[0]].name.toLowerCase()).join(', ')}</span></div>
       <ol class="exlist">${blocks.map((b, i) => `<li data-act="ex" data-ex="${b.ex}"><span class="exl-n">${i + 1}</span>
         <div class="fig thumb" data-ex="${b.ex}"${b.side === 'G' ? ' data-m="1"' : ''} style="--fig:${CATS[EX[b.ex].cat][1]}"></div>
-        <div class="exl-txt"><b>${EX[b.ex].name}${b.side ? ` <span class="side">${sideLabel(b.ex, b.side)}</span>` : ''}</b><small>${lv.work} s · ${EX[b.ex].mus}</small></div>
+        <div class="exl-txt"><b>${EX[b.ex].name}${b.side ? ` <span class="side">${sideLabel(b.ex, b.side)}</span>` : ''}</b><small>${isReps(b.ex) ? repsFor(b.ex, S.level) + ' répétitions' : lv.work + ' s'} · ${EX[b.ex].mus}</small></div>
         ${isDb(b.ex) ? kgBtn(b.ex) : ''}</li>`).join('')}</ol>
       <div class="phase-line"><i class="dot"></i><span><b>Retour au calme</b> · ${COOL[key].map(w => EX[w[0]].name.toLowerCase()).join(', ')}</span></div>
     </div>`;
 }
 
 function levelPicker() {
-  return `<div class="lvls">${LEVELS.map(l => `<button class="lvl" data-act="level" data-v="${l.n}" aria-pressed="${S.level === l.n}"><b>${l.n}</b><span>${l.name}</span><small>${l.work} s · ${l.rest} s</small></button>`).join('')}</div>`;
+  return `<div class="lvls">${LEVELS.map(l => `<button class="lvl" data-act="level" data-v="${l.n}" aria-pressed="${S.level === l.n}"><b>${l.n}</b><span>${l.name}</span><small>${l.reps} rép.</small><small>${l.work} s · ${l.rest} s</small></button>`).join('')}</div>`;
 }
 
 function renderProg() {
-  const plan = buildPlan('push', S.level, false), lv = LEVELS[S.level - 1], next = nextSid();
+  const plan = buildPlan('push', S.level, false), next = nextSid();
   const tl = plan.steps.filter(s => s.k !== 'ready').map(s => `<i class="${s.k === 'work' ? 'x' : s.k === 'rest' ? 'r' : 'w'}" style="flex:${s.dur}"></i>`).join('');
   $('v-prog').innerHTML = `<div class="card"><h2>Comment ça marche</h2>
-      <p class="lead">10 minutes, pas une de plus : tout est chronométré, tu n'as qu'à suivre la voix et les bips.</p>
+      <p class="lead">10 minutes, pas une de plus. La muscu se compte en répétitions : tu fais ta série, tu touches « Fait » et la récup démarre. Les abdos et le gainage sont chronométrés : il suffit de suivre la voix et les bips.</p>
       <div class="tl" aria-hidden="true">${tl}</div>
-      <div class="tl-leg"><span>Échauffement 1 min</span><span>8 × ${lv.work} s d'effort</span><span>Calme 50 s</span></div>
+      <div class="tl-leg"><span>Échauffement 1 min</span><span>8 exercices</span><span>Calme 50 s</span></div>
       <ol class="steps">
         <li><b>1</b><span>Une séance par jour, et chaque jour la suivante : <strong>poussée, tirage, gainage, haut du corps, abdos</strong>. Les mêmes muscles du haut du corps ne travaillent jamais deux jours de suite ; les abdos, eux, encaissent bien un peu chaque jour.</span></li>
         <li><b>2</b><span>Chaque séance alterne muscu et abdos, pour que les bras récupèrent pendant que le ventre travaille.</span></li>
         <li><b>3</b><span>Pressé, ou grosse sortie trail ou vélo dans la journée ? Le format <strong>5 min</strong> garde la régularité.</span></li>
       </ol></div>
-    <div class="card"><h2>Ton niveau</h2><p class="lead">Le niveau change le temps d'effort et de récup, la séance reste à 10 minutes.</p>${levelPicker()}
+    <div class="card"><h2>Ton niveau</h2><p class="lead">Le niveau fixe le nombre de répétitions en muscu (rép.), le temps d'effort en abdos et gainage, puis la récup. La séance reste sous les 10 minutes.</p>${levelPicker()}
       <p class="lead" style="margin-top:12px">Note chaque séance à la fin : après trois « facile » de suite, l'app te propose le niveau au-dessus.</p></div>
     <h2 style="margin:24px 4px 0">Les 5 séances</h2>
     ${ROT.map(sid => { const se = SESS[sid]; return `<div class="card sess" style="--acc:${se.color}">
@@ -855,7 +871,7 @@ function renderProg() {
       <li>Qualité avant vitesse : un mouvement propre et contrôlé vaut mieux que deux bâclés.</li>
       <li>Souffle pendant l'effort (en poussant, en montant), inspire en revenant.</li>
       <li>Sur les exercices allongés, le bas du dos reste plaqué au sol. S'il se creuse, réduis l'amplitude.</li>
-      <li>Haltères : choisis la charge pour que les 5 dernières secondes soient dures mais propres. Note-la sur l'exercice, l'app la retient.</li>
+      <li>Haltères : choisis la charge pour que les 2 ou 3 dernières répétitions soient dures mais propres. Si la série passe trop facilement, monte la charge plutôt que le niveau. Note-la sur l'exercice, l'app la retient.</li>
       <li>Une douleur dans une articulation n'est pas normale : passe à la version plus facile ou saute l'exercice (bouton suivant).</li>
       <li>Un jour raté n'a aucune importance : la rotation reprend où tu en étais.</li>
     </ul></div>`;
@@ -933,7 +949,7 @@ function exSheet(id) {
   const inSess = ROT.filter(s => SESS[s].blocks.some(b => (Array.isArray(b) ? b[0] : b) === id)).map(s => SESS[s].name);
   openSheet(`<div style="--fig:${col}"><div class="sheet-fig"><div class="fig" data-ex="${id}"></div></div>
     <h2>${e.name}</h2><p class="muted">${e.mus}</p>
-    <div class="tags"><span>${EQ[e.eq]}</span>${inSess.map(n => `<span>${n}</span>`).join('')}</div>
+    <div class="tags"><span>${EQ[e.eq]}</span>${isReps(id) ? `<span>${repsFor(id, S.level)} répétitions au niveau ${S.level}</span>` : ''}${inSess.map(n => `<span>${n}</span>`).join('')}</div>
     ${isDb(id) ? kgEditor(id) : ''}
     <h3>Comment faire</h3><ol class="cues">${e.cues.map(c => `<li>${c}</li>`).join('')}</ol>
     <div class="tip warn"><b>À éviter</b>${e.err}</div>
@@ -1036,7 +1052,7 @@ function startSession(sid) {
       <div class="pl-phase" id="plPhase"></div>
       <div class="pl-figbox" id="plFigBox"><div class="fig" id="plFig"></div></div>
       <div class="pl-name" id="plName"></div><div class="pl-sub" id="plSub"></div>
-      <div class="pl-ring"><svg viewBox="0 0 120 120"><circle class="rt" cx="60" cy="60" r="52"/><circle class="rp" id="plRing" cx="60" cy="60" r="52"/></svg><div class="pl-sec" id="plSec"></div></div>
+      <div class="pl-ring"><svg viewBox="0 0 120 120"><circle class="rt" cx="60" cy="60" r="52"/><circle class="rp" id="plRing" cx="60" cy="60" r="52"/></svg><div class="pl-sec"><b id="plSec"></b><small id="plUnit"></small></div></div>
       <div class="pl-cue" id="plCue"></div>
     </div>
     <div class="pl-ctrl" id="plCtrl"><button data-act="pl-prev" aria-label="Précédent">${ICON.prev}</button><button class="pl-play" data-act="pl-pause" id="plPlay" aria-label="Pause">${ICON.pause}</button><button data-act="pl-next" aria-label="Suivant">${ICON.next}</button></div>
@@ -1062,7 +1078,12 @@ function enterStep() {
   $('plMain').style.setProperty('--ph', ph[1]);
   $('plPhase').textContent = ph[0];
   $('plName').textContent = s.k === 'rest' ? `Ensuite : ${ex.name}` : s.k === 'ready' ? 'Échauffement' : ex.name;
-  $('plSub').textContent = s.k === 'ready' ? `${ex.name} pour commencer` : [side, kg].filter(Boolean).join(' · ');
+  $('plSub').textContent = s.k === 'ready' ? `${ex.name} pour commencer` : [s.k === 'rest' && s.reps ? `${s.reps} répétitions` : '', side, kg].filter(Boolean).join(' · ');
+  const c = counted(s);
+  $('plUnit').textContent = c ? 'répétitions' : '';
+  $('plPlay').classList.toggle('done', c);
+  $('plPlay').innerHTML = c ? `${ICON.check}Fait` : run.paused ? ICON.play : ICON.pause;
+  $('plPlay').setAttribute('aria-label', c ? 'Série terminée' : run.paused ? 'Reprendre' : 'Pause');
   $('plFigBox').classList.toggle('rest', s.k === 'rest' || s.k === 'ready');
   const fig = $('plFig');
   fig.removeAttribute('data-on');
@@ -1072,7 +1093,7 @@ function enterStep() {
   if (run.paused) fig._fig.hold = true;
   const name = ex.name + (side ? ', ' + side : '');
   if (s.k === 'work') { beep('go'); vibe(220); }
-  else if (s.k === 'rest') { beep('rest'); vibe([80, 60, 80]); say(s.setup ? `Installe-toi. Premier exercice : ${name}` : `Récup. Ensuite : ${name}`); }
+  else if (s.k === 'rest') { beep('rest'); vibe([80, 60, 80]); const next = (s.reps ? s.reps + ' ' : '') + name; say(s.setup ? `Installe-toi. Premier exercice : ${next}` : `Récup. Ensuite : ${next}`); }
   else if (s.k === 'warm') { beep('go'); say(prev.k === 'ready' ? `Échauffement. ${name}` : name); }
   else if (s.k === 'cool') { beep('rest'); say(prev.k === 'cool' ? name : `Retour au calme. ${name}`); }
   updateHud(0);
@@ -1083,8 +1104,9 @@ function elapsedNow() { return run.paused ? run.el : (performance.now() - run.t0
 function tick() {
   if (!run || run.paused || run.over) return;
   let el = elapsedNow(), moved = false;
-  while (el >= step().dur) {
+  while (!counted(step()) && el >= step().dur) {
     if (run.i >= run.plan.steps.length - 1) return finish(false);
+    step().spent = step().dur;
     run.t0 += step().dur * 1000; el -= step().dur; run.i++; moved = true;
   }
   if (moved) enterStep();
@@ -1093,31 +1115,32 @@ function tick() {
 }
 
 function updateHud(el) {
-  const s = step(), sec = Math.max(1, Math.ceil(s.dur - el - 1e-6));
+  const s = step(), c = counted(s), sec = c ? s.reps : Math.max(1, Math.ceil(s.dur - el - 1e-6));
   if (sec !== run.lastSec) {
     $('plSec').textContent = sec;
-    if (run.lastSec !== null && sec <= 3) beep('tick');
+    if (!c && run.lastSec !== null && sec <= 3) beep('tick');
     run.lastSec = sec;
   }
   const cues = EX[s.ex].cues, ci = s.k === 'rest' || s.k === 'ready' ? 0 : Math.floor(el / 6) % cues.length;
   if (ci !== run.cue) { run.cue = ci; $('plCue').textContent = cues[ci]; }
-  const done = run.plan.steps.slice(0, run.i).reduce((a, x) => a + (x.k === 'ready' ? 0 : x.dur), 0) + (s.k === 'ready' ? 0 : el);
-  $('plClock').textContent = `${mmss(done)} / ${mmss(run.plan.total)}`;
+  const done = run.plan.steps.slice(0, run.i).reduce((a, x) => a + (x.k === 'ready' ? 0 : x.spent ?? x.dur), 0) + (s.k === 'ready' ? 0 : el);
+  $('plClock').textContent = `${mmss(done)} / ${run.plan.approx ? '≈' : ''}${mmss(run.plan.total)}`;
   const segs = $('plBar').children;
   let j = 0;
   run.plan.steps.forEach((x, i) => {
     if (x.k === 'ready' || x.k === 'rest') return;
-    segs[j++].style.setProperty('--p', i < run.i ? 1 : i === run.i ? Math.min(el / x.dur, 1) : 0);
+    segs[j++].style.setProperty('--p', i < run.i ? 1 : i === run.i ? Math.min(el / x.dur, c ? .9 : 1) : 0);
   });
   run.doneSec = done;
 }
 
 function drawRing(now) {
   const s = step(), el = run.paused ? run.el : (now - run.t0) / 1000;
-  $('plRing').style.strokeDashoffset = (C * Math.min(Math.max(el / s.dur, 0), 1)).toFixed(1);
+  $('plRing').style.strokeDashoffset = counted(s) ? 0 : (C * Math.min(Math.max(el / s.dur, 0), 1)).toFixed(1);
 }
 
 function jump(i) {
+  step().spent = counted(step()) ? elapsedNow() : Math.min(elapsedNow(), step().dur);
   run.i = Math.max(0, Math.min(i, run.plan.steps.length - 1));
   run.t0 = performance.now(); run.el = 0;
   if ('speechSynthesis' in window) speechSynthesis.cancel();
@@ -1139,6 +1162,7 @@ function setPaused(p) {
   else { run.t0 = performance.now() - run.el * 1000; run.paused = false; wake(); }
   const f = $('plFig')._fig;
   if (f) f.hold = p;
+  if (counted(step())) return;
   $('plPlay').innerHTML = p ? ICON.play : ICON.pause;
   $('plPlay').setAttribute('aria-label', p ? 'Reprendre' : 'Pause');
 }
@@ -1158,7 +1182,8 @@ function finish(partial) {
   clearInterval(run.iv);
   run.over = true;
   try { run.wake?.release(); } catch {}
-  const p = run.plan, sec = Math.round(partial ? run.doneSec : p.total);
+  const p = run.plan, spent = p.steps.reduce((a, x) => a + (x.k === 'ready' ? 0 : x.spent ?? x.dur), 0);
+  const sec = Math.round(partial ? run.doneSec : spent);
   const entry = { at: Date.now(), d: dkey(), s: p.sid, lv: p.lv, x: p.express, sec, feel: null };
   if (partial) entry.partial = true;
   S.history.push(entry);
@@ -1229,7 +1254,7 @@ document.addEventListener('click', ev => {
     case 'del':
       if (confirm('Supprimer cette séance de l\'historique ?')) { S.history = S.history.filter(e => String(e.at) !== el.dataset.at); save(); render(); }
       break;
-    case 'pl-pause': setPaused(!run.paused); break;
+    case 'pl-pause': if (counted(step())) nextStep(); else setPaused(!run.paused); break;
     case 'pl-prev': prevStep(); break;
     case 'pl-next': nextStep(); break;
     case 'pl-quit': askQuit(); break;
@@ -1258,7 +1283,7 @@ document.addEventListener('click', ev => {
 
 document.addEventListener('keydown', ev => {
   if (ev.key === 'Escape') { if (!$('sheet').hidden) closeSheet(); else if (run && !run.over) askQuit(); }
-  if (ev.key === ' ' && run && !run.over && !$('plModal')) { ev.preventDefault(); setPaused(!run.paused); }
+  if (ev.key === ' ' && run && !run.over && !$('plModal')) { ev.preventDefault(); if (counted(step())) nextStep(); else setPaused(!run.paused); }
 });
 
 addEventListener('popstate', () => {

@@ -28,7 +28,10 @@ Quatre onglets en bas :
 **Lecteur de séance** (plein écran) : barre de progression segmentée, phase (Prêt ?,
 Échauffement, Exercice n / 8, Récup, Installe-toi, Retour au calme), grand bonhomme animé, nom,
 côté et charge, anneau qui se vide avec les secondes, une consigne qui tourne toutes les 6 s,
-précédent / pause / suivant, chrono écoulé / total. Pendant la récup, le bonhomme montre
+précédent / pause / suivant, chrono écoulé / total. **Muscu en répétitions (v2)** : sur un
+exercice de poussée ou de tirage, l'anneau reste plein et affiche le nombre de répétitions, le
+bouton central devient **« Fait »** et rien n'avance tant qu'on ne l'a pas touché (Espace au
+clavier) ; la récup démarre alors. Pendant la récup, le bonhomme montre
 l'exercice suivant (atténué). Bips 3-2-1 (Web Audio), **voix française** (speechSynthesis) qui
 annonce l'exercice suivant pendant la récup, vibreur Android, **Wake Lock** (l'écran ne s'éteint
 pas). Arrêter en cours : la séance compte quand même au-delà de 60 %. Écran de fin avec note
@@ -42,12 +45,24 @@ de bras 30 s), 10 s pour s'installer, **8 exercices** séparés par une récup, 
 (cobra 25 s + posture de l'enfant 25 s). Format **5 min** : jumping jacks 30 s, 4 exercices
 (liste `express` de chaque séance), posture de l'enfant 30 s.
 
-| Niveau | Effort | Récup | Durée (hors « Prêt ? ») |
-|---|---|---|---|
-| 1 Découverte | 30 s | 30 s | 9 min 30 |
-| 2 Régulier (défaut) | 40 s | 20 s | 9 min 40 |
-| 3 Solide | 45 s | 15 s | 9 min 45 |
-| 4 Costaud | 50 s | 10 s | 9 min 50 |
+Depuis la v2 (demande de Simon : « pas fan du chrono pour la muscu, plutôt un nombre de
+mouvements »), **la muscu se compte en répétitions** et **les abdos et le gainage restent au
+chrono**. Règle dans le code : `isReps(id)` = catégorie `push` ou `pull` (donc pompes, haltères,
+rowing en planche) ; le russian twist, même avec un haltère, reste chronométré (catégorie `core`).
+
+| Niveau | Muscu | Abdos / gainage | Récup | Poussée (estimée) | Gainage (tout au chrono) |
+|---|---|---|---|---|---|
+| 1 Découverte | 8 rép. | 30 s | 30 s | ≈ 9 min | 9 min 30 |
+| 2 Régulier (défaut) | 10 rép. | 40 s | 20 s | ≈ 9 min | 9 min 40 |
+| 3 Solide | 12 rép. | 45 s | 15 s | ≈ 9 min | 9 min 45 |
+| 4 Costaud | 15 rép. | 50 s | 10 s | ≈ 9 min 20 | 9 min 50 |
+
+Pompes serrées et rowing en planche ont leur propre échelle (`reps: [6, 8, 10, 12]`, chaque bras
+compte pour un au rowing en planche). La durée d'une série est estimée à 2,7 s par répétition
++ 3 s (`SEC_PER_REP`) : elle sert à l'estimation affichée (« ≈ », arrondie à 10 s) et à la barre de
+progression. Une série comptée est toujours estimée plus courte que l'effort chronométré du même
+niveau, donc la séance la plus longue reste Gainage, tout au chrono (9 min 50 au niveau 4). La
+durée enregistrée dans l'historique est le **temps réel** (`spent` de chaque étape).
 
 **Rotation** (une séance par jour, chaque jour la suivante, un jour raté ne décale rien) :
 `push -> pull -> core -> upper -> abs`. Ordre choisi pour ne jamais mettre deux jours de suite les
@@ -121,6 +136,11 @@ l'appareil. La séance du jour = la suivante de la dernière faite dans `ROT`.
 
 ## Statut
 
+- **v2 (2026-11-04)** : la muscu passe en **répétitions** avec un bouton « Fait » (8 / 10 / 12 / 15
+  selon le niveau), abdos et gainage restent au chrono ; durée affichée en « ≈ » ; durée réelle
+  enregistrée. Testée dans le navigateur intégré : séance Poussée complète (4 séries comptées qui
+  attendent « Fait », 4 efforts chronométrés, 8 min 58 enregistrées), bascule du bouton entre
+  « Fait » et pause, cartes de niveau.
 - **v1 en ligne (2026-11-03, `6415afb`)** sur **https://kkjsf.github.io/tonus/**, dépôt public
   `git@github.com:kkjsf/tonus.git` (branche `main`, Pages « Deploy from a branch », `main` /
   racine). Vérifiée en ligne : bonne version servie, service worker actif, 7 fichiers en cache
