@@ -136,11 +136,13 @@ l'appareil. La séance du jour = la suivante de la dernière faite dans `ROT`.
 
 ## Statut
 
-- **v2 (2026-11-04)** : la muscu passe en **répétitions** avec un bouton « Fait » (8 / 10 / 12 / 15
+- **v2 en ligne (2026-11-04, `7fa494b`)** : la muscu passe en **répétitions** avec un bouton « Fait » (8 / 10 / 12 / 15
   selon le niveau), abdos et gainage restent au chrono ; durée affichée en « ≈ » ; durée réelle
   enregistrée. Testée dans le navigateur intégré : séance Poussée complète (4 séries comptées qui
   attendent « Fait », 4 efforts chronométrés, 8 min 58 enregistrées), bascule du bouton entre
-  « Fait » et pause, cartes de niveau.
+  « Fait » et pause, cartes de niveau. Vérifiée en ligne : `APP_VERSION` 2, cache `tonus-v2`, aucune
+  erreur console. Le premier déploiement Pages est resté bloqué en file d'attente (incident GitHub
+  Actions du 4 novembre) : relancé par un commit vide (`696e4e9`), qui remplace le run en attente.
 - **v1 en ligne (2026-11-03, `6415afb`)** sur **https://kkjsf.github.io/tonus/**, dépôt public
   `git@github.com:kkjsf/tonus.git` (branche `main`, Pages « Deploy from a branch », `main` /
   racine). Vérifiée en ligne : bonne version servie, service worker actif, 7 fichiers en cache
